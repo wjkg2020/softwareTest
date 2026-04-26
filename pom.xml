@@ -99,6 +99,8 @@
                         <param>jpass.crypt.*</param>
                         <param>jpass.util.DateUtils</param>
                         <param>jpass.util.StringUtils</param>
+                        <param>jpass.util.CryptUtils</param>
+                        <param>jpass.util.Configuration</param>
                         <param>jpass.data.*</param>
                     </targetClasses>
                     <timestampedReports>true</timestampedReports>

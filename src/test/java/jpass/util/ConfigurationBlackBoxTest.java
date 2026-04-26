@@ -42,17 +42,16 @@ public class ConfigurationBlackBoxTest {
     }
 
     static Stream<Arguments> provideStringTestCases() {
+        // 预先生成长字符串
+        String longStr = new String(new char[1000]).replace('\0', 'a');
+
         return Stream.of(
-                // EP: 系统属性存在
                 Arguments.of("test.string", "hello", "default", "hello"),
-                // EP: 系统属性不存在，使用默认值
                 Arguments.of("test.string", null, "default", "default"),
-                // EG: 默认值为 null
                 Arguments.of("test.string", null, null, null),
-                // BA: 空字符串
-                Arguments.of("test.string", "", "default", "")
-                // BA: 极长字符串
-//                Arguments.of("test.string", "a".repeat(1000), "default", "a".repeat(1000))
+                Arguments.of("test.string", "", "default", ""),
+                // 使用 Java 8 兼容的长字符串
+                Arguments.of("test.string", longStr, "default", longStr)
         );
     }
 
