@@ -84,6 +84,33 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.pitest</groupId>
+                <artifactId>pitest-maven</artifactId>
+                <version>1.15.0</version>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>org.pitest</groupId>
+                        <artifactId>pitest-junit5-plugin</artifactId>
+                        <version>1.2.1</version> </dependency>
+                </dependencies>
+                <configuration>
+                    <targetClasses>
+                        <param>jpass.crypt.*</param>
+                        <param>jpass.util.DateUtils</param>
+                        <param>jpass.util.StringUtils</param>
+                        <param>jpass.data.*</param>
+                    </targetClasses>
+                    <timestampedReports>true</timestampedReports>
+                    <targetTests>
+                        <param>jpass.crypt.*Test</param>
+                        <param>jpass.util.*Test</param>
+                        <param>jpass.data.*Test</param>
+                    </targetTests>
+                    <verbose>false</verbose>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.3.0</version>
@@ -98,6 +125,7 @@
                         </manifest>
                     </archive>
                 </configuration>
+
                 <executions>
                     <execution>
                         <id>assemble-all</id>
