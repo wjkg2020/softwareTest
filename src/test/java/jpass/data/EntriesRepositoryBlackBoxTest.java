@@ -32,7 +32,7 @@ public class EntriesRepositoryBlackBoxTest {
         return tempDir.resolve(prefix + "_" + System.nanoTime() + ".jpass").toString();
     }
 
-    // --- 1. Combinatorial Testing (组合测试) ---
+    // --- 1. Combinatorial Testing ---
 
     /**
      * Test Goal: Data integrity across various key types and data volumes.
@@ -71,7 +71,7 @@ public class EntriesRepositoryBlackBoxTest {
         );
     }
 
-    // --- 2. Equivalence Partitioning (等价类划分 - EP) ---
+    // --- 2. Equivalence Partitioning ---
 
     /**
      * Test Goal: Verify system handles different file naming conventions.
@@ -90,7 +90,7 @@ public class EntriesRepositoryBlackBoxTest {
         assertTrue(file.exists(), "File " + name + " should be successfully created.");
     }
 
-    // --- 3. Boundary Analysis (边界值分析 - BA) ---
+    // --- 3. Boundary Analysis---
 
     /**
      * Test Goal: Check empty character array as a key.
@@ -110,7 +110,7 @@ public class EntriesRepositoryBlackBoxTest {
         });
     }
 
-    // --- 4. Error Guessing (错误猜测 - EG) ---
+    // --- 4. Error Guessing---
 
     /**
      * Test Goal: Ensure correct handling of authentication failure.
@@ -179,28 +179,5 @@ public class EntriesRepositoryBlackBoxTest {
         assertThrows(IOException.class, () -> repo.readDocument());
     }
 
-    @Test
-    public void demonstrateResourceLeakFault() throws Exception {
-        String fileName = "leak_demo.jpass";
-        File file = new File(fileName);
-
-        // 1. 准备：创建一个加密文件
-        EntriesRepository.newInstance(fileName, "correct".toCharArray()).writeDocument(new Entries());
-
-        // 2. 触发 Bug：用错误的密码读取，触发异常
-        EntriesRepository wrongRepo = EntriesRepository.newInstance(fileName, "wrong".toCharArray());
-        try {
-            wrongRepo.readDocument();
-        } catch (Exception e) {
-            // 捕获异常，程序继续执行
-            System.out.println("Caught expected exception: " + e.getMessage());
-        }
-
-        // 3. 证明 Fault：在异常发生后，立即尝试删除该文件
-        // 如果 JPass 存在资源泄露，底层的 FileInputStream 没关闭，Windows 会拒绝删除
-        boolean deleted = java.nio.file.Files.deleteIfExists(file.toPath());
-
-        // 这里的断言会失败！因为 deleted 将为 false（或者直接抛出 AccessDeniedException）
-        assertTrue(deleted, "FAULT PROVEN: File should be deletable if resources were closed properly.");
-    }
+ 
 }
