@@ -28,24 +28,21 @@ Impact: Potential Application Denial of Service (DoS). If a user or a corrupted 
  */
 public class CryptUtilsBlackBoxTest {
 
-    // --- 1. PBKDF2 组合测试 (Combinatorial Testing) ---
-    /**
-     * 测试目标：验证不同参数组合下的 PBKDF2 密钥生成。
-     * 使用笛卡尔积思想覆盖多种输入组合。
-     */
+    // --- 1. PBKDF2  (Combinatorial Testing) ---
+
     @ParameterizedTest
     @MethodSource("providePbkdf2Combinations")
     public void testPBKDF2Key_Combinatorial(char[] text, byte[] salt, int iterations) {
         if (salt == null || salt.length == 0 || iterations <= 0) {
-            // 预期崩溃的情况
+        
             assertThrows(Exception.class, () -> CryptUtils.getPBKDF2Key(text, salt, iterations));
         } else {
-            // 正常运行的情况（包含 text == null）
+    
             byte[] key1 = CryptUtils.getPBKDF2Key(text, salt, iterations);
             assertNotNull(key1);
             assertEquals(32, key1.length);
 
-            // 验证确定性
+            
             byte[] key2 = CryptUtils.getPBKDF2Key(text, salt, iterations);
             assertArrayEquals(key1, key2);
         }
@@ -56,7 +53,7 @@ public class CryptUtilsBlackBoxTest {
                 "".toCharArray(),
                 "password".toCharArray(),
                 "P@ssw0rd123!@#".toCharArray(),
-                "你好世界".toCharArray() // UTF-8 字符
+                "你好世界".toCharArray() // UTF-8 
         };
         byte[][] salts = {
                 new byte[0],
@@ -74,7 +71,7 @@ public class CryptUtilsBlackBoxTest {
                 }
             }
         }
-        // 增加 Error Guessing 案例
+       
         builder.add(Arguments.of(null, new byte[16], 1000));
         builder.add(Arguments.of("p".toCharArray(), null, 1000));
         builder.add(Arguments.of("p".toCharArray(), new byte[16], -1));
@@ -82,7 +79,7 @@ public class CryptUtilsBlackBoxTest {
         return builder.build();
     }
 
-    // --- 2. SHA-256 边界值与等价类测试 (BA + EP) ---
+    // --- 2. SHA-256  (BA + EP) ---
     @ParameterizedTest
     @MethodSource("provideShaTestCases")
     public void testSha256Hash_Variations(char[] text) {
@@ -95,7 +92,6 @@ public class CryptUtilsBlackBoxTest {
     }
 
     static Stream<Arguments> provideShaTestCases() {
-        // 生成长字符串 (Java 8 兼容方式)
         char[] longCharArr = new String(new char[1024]).replace('\0', 'z').toCharArray();
 
         return Stream.of(
@@ -108,12 +104,12 @@ public class CryptUtilsBlackBoxTest {
         );
     }
 
-    // --- 3. 随机盐生成测试 (BA + EG) ---
+    // --- 3. salt (BA + EG) ---
     @ParameterizedTest
     @ValueSource(ints = {-1, 0, 1, 8, 16, 32, 1024})
     public void testGenerateRandomSalt_Boundary(int length) {
         if (length < 0) {
-            // 错误猜测：负数长度可能抛出异常
+            
             assertThrows(NegativeArraySizeException.class, () -> CryptUtils.generateRandomSalt(length));
         } else {
             byte[] salt = CryptUtils.generateRandomSalt(length);
@@ -121,25 +117,25 @@ public class CryptUtilsBlackBoxTest {
 
             if (length > 0) {
                 byte[] anotherSalt = CryptUtils.generateRandomSalt(length);
-                // 验证随机性：两次生成的盐不应相同 (极低概率碰撞)
                 assertFalse(Arrays.equals(salt, anotherSalt));
             }
         }
     }
 
-    // --- 4. 随机数生成器质量测试 ---
+    // --- 4. Random Number Test ---  
+// --- 4. 随机 N ---
     @Test
     public void testRandomGeneratorUniqueness() {
-        // 验证返回的 Random 对象不是同一个实例，或者至少能产生不同序列
+       
         Set<Integer> numbers = new HashSet<>();
         for (int i = 0; i < 100; i++) {
             numbers.add(CryptUtils.newRandomNumberGenerator().nextInt());
         }
-        // 如果 100 个随机数都一样，那肯定是挂了
+       
         assertTrue(numbers.size() > 95, "Random numbers should be unique enough");
     }
 
-    // --- 5. 默认迭代次数合规性测试 ---
+    
     @Test
     public void testDefaultIterationsIntegrity() {
         char[] pass = "admin".toCharArray();
