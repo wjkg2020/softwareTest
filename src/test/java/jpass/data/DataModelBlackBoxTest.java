@@ -93,7 +93,6 @@ public class DataModelBlackBoxTest {
      */
     @Test
     public void testGetEntryByTitle_NullInput() {
-        // 猜测程序员可能没对 getTitles().indexOf(title) 中的 title 做 null 检查
         assertDoesNotThrow(() -> {
             Entry result = dataModel.getEntryByTitle(null);
             assertNull(result);
@@ -128,7 +127,6 @@ public class DataModelBlackBoxTest {
         entry.setTitle("Amazon");
         dataModel.getEntries().getEntry().add(entry);
 
-        // 预期：Java List.indexOf 是区分大小写的
         Entry result = dataModel.getEntryByTitle("amazon");
         assertNull(result, "Should not find 'amazon' if the stored title is 'Amazon'");
     }
