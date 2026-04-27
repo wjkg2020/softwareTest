@@ -57,3 +57,49 @@ This report details the usability testing and heuristic evaluation for the first
 * **Observation**: The generated password is displayed in a dedicated preview field for immediate review.
 * **Finding**: **Minor Issue**. While the status of the generation is visible, there is no real-time **"Strength Meter"** to provide feedback on the entropy of the user's custom settings.
 * **Recommendation**: Integrate a color-coded strength indicator (Red to Green) to help users understand the security implications of their chosen constraints.
+  
+---
+
+## 5. Searching Window
+
+**User Test Case: Keyboard Navigation**
+* **Scenario**: A user is actively working in another application and switches back to the password manager to quickly retrieve a specific account using their keyboard.
+* **Task**: Use a keyboard shortcut to focus the search field, type a keyword, and locate the desired credential without using the mouse.
+* **Expected Behavior**: The user presses a standard searching shortcut, the cursor immediately focuses within the "Find" input field, and the list filters as the user types.
+
+**Heuristic Evaluation: Consistency and Standards**
+* **Observation**: The user attempts to initiate a search using standard keyboard shortcuts but cannot find any visual cue indicating if shortcuts are supported.
+* **Finding**: **Minor Issue**. The "Find" label and input box lack a visual hint regarding keyboard shortcuts. It did not follow macOS system convention.
+* **Recommendation**: Add "Find" to the tool bar text or the input box that explicitly states "Find (Control+F)" to improve discoverability and align with platform standards.
+
+---
+
+## 6. Configuration Dialog
+
+**User Test Case: Exporting Database with System Conventions**
+* **Scenario**: A user wants to export their current JPass password database to an XML file for backup purposes.
+* **Task**: Open the export configuration dialog, navigate to the desired folder, enter a file name, and finalize the export.
+* **Expected Behavior**: The dialog interface matches macOS native UI guidelines, and the UI language is consistently localized (either entirely in English or entirely in the system's local language).
+
+**Heuristic Evaluation: Consistency and Standards**
+* **Observation**: The Export dialog exhibits mixed localization (e.g., "Export" for the window title and primary button, but "查找(I):" and "取消" for other controls). Additionally, labels include Windows-style accelerator indicators like `(N)` and `(T)`, which are non-standard and often non-functional on macOS.
+* **Finding**: **Major Issue**. This is a classic cross-platform GUI framework artifact. The mixed languages confuse the user, and the presence of Windows accelerators on a Mac breaks platform conventions, making the application feel unpolished and untrustworthy for handling sensitive security data.
+* **Recommendation**: 
+    1. Unify the language resource bundles to ensure consistent localization based on the user's OS locale setting. 
+    2. Strip Windows-specific accelerator text (like `(&N)`) when the application detects it is running on a macOS environment, or better yet, utilize the OS's native File Chooser API instead of a custom UI dialogue.
+  
+---
+
+## 7. Searching Window
+
+**User Test Case: Keyboard Navigation**
+* **Scenario**: A user is actively working in another application and switches back to the password manager to quickly retrieve a specific account using their keyboard.
+* **Task**: Use a keyboard shortcut to focus the search field, type a keyword, and locate the desired credential without using the mouse.
+* **Expected Behavior**: The user presses a standard searching shortcut, the cursor immediately focuses within the "Find" input field, and the list filters as the user types.
+
+**Heuristic Evaluation: Consistency and Standards**
+* **Observation**: The user attempts to initiate a search using standard keyboard shortcuts but cannot find any visual cue indicating if shortcuts are supported.
+* **Finding**: **Minor Issue**. The "Find" label and input box lack a visual hint regarding keyboard shortcuts. It did not follow macOS system convention.
+* **Recommendation**: Add "Find" to the tool bar text or the input box that explicitly states "Find (Control+F)" to improve discoverability and align with platform standards.
+
+---
