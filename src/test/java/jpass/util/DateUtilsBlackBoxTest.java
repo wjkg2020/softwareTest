@@ -8,21 +8,17 @@ public class DateUtilsBlackBoxTest {
 
     @Test
     public void testCreateFormatterEquivalence() {
-        // EP (Equivalence Partitioning): Valid standard date patterns
+        
         DateTimeFormatter formatter = DateUtils.createFormatter("yyyy-MM-dd");
         assertNotNull(formatter, "Valid pattern should successfully return a formatter");
     }
 
     @Test
     public void testFormatIsoDateTimeEquivalence() {
-        // EP: Valid ISO strings and Valid Epoch timestamps
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-        // Approach 1: Standard ISO Date
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String isoResult = DateUtils.formatIsoDateTime("2026-04-24T12:00:00", formatter);
         assertEquals("2026-04-24 12:00:00", isoResult, "Should correctly format standard ISO strings");
-
-        // Approach 2: Epoch Timestamp (e.g., timestamp for some date in 2023)
         String epochResult = DateUtils.formatIsoDateTime("1700000000000", formatter);
         assertNotNull(epochResult, "Should correctly parse and format Epoch timestamp strings");
         assertFalse(epochResult.isEmpty());
@@ -30,21 +26,14 @@ public class DateUtilsBlackBoxTest {
 
     @Test
     public void testErrorGuessingAndCombinatorial() {
+        
         DateTimeFormatter validFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         DateTimeFormatter invalidFormatter = DateUtils.createFormatter("invalid_format_xyz");
-
-        // 【修复】动态识别系统的 Epoch 0 年份
         String fallbackYear = java.util.TimeZone.getDefault().getRawOffset() < 0 ? "1969" : "1970";
-
-        // EG: Garbage data should safely fall back
         String garbageResult = DateUtils.formatIsoDateTime("not_a_date_at_all", validFormatter);
         assertTrue(garbageResult.contains(fallbackYear), "Garbage data should fallback to local Epoch 0");
-
-        // EG: Null inputs shouldn't crash the app
         String nullResult = DateUtils.formatIsoDateTime(null, validFormatter);
         assertTrue(nullResult.contains(fallbackYear), "Null data should safely fallback to local Epoch 0");
-
-        // Combinatorial: Valid date + Invalid Formatter
         String comboResult = DateUtils.formatIsoDateTime("2021-03-02T20:11:58", invalidFormatter);
         assertEquals("2021-03-02", comboResult, "Should format correctly using the fallback formatter");
     }
