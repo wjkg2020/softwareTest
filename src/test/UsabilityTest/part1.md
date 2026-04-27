@@ -18,7 +18,7 @@ This report details the usability testing and heuristic evaluation for the first
 
 ---
 
-## 2. Master Password Dialog
+## 2. Master Password Window
 
 **User Test Case: Secure Database Initialization**
 * **Scenario**: A user is setting up a new vault for the first time to store sensitive credentials.
@@ -32,7 +32,7 @@ This report details the usability testing and heuristic evaluation for the first
 
 ---
 
-## 3. Entry Dialog (Add New Entry)
+## 3. Entry Window (Add New Entry)
 
 **User Test Case: Integrated Account Creation**
 * **Scenario**: The user needs to add a new GitHub account entry with a unique, secure password.
@@ -46,7 +46,7 @@ This report details the usability testing and heuristic evaluation for the first
 
 ---
 
-## 4. Password Generator Dialog
+## 4. Password Generator Window
 
 **User Test Case: Meeting Custom Security Constraints**
 * **Scenario**: A website requires a 16-character password consisting only of numbers and symbols.
@@ -74,7 +74,7 @@ This report details the usability testing and heuristic evaluation for the first
 
 ---
 
-## 6. Configuration Dialog
+## 6. Configuration Window
 
 **User Test Case: Exporting Database with System Conventions**
 * **Scenario**: A user wants to export their current JPass password database to an XML file for backup purposes.
@@ -90,16 +90,28 @@ This report details the usability testing and heuristic evaluation for the first
   
 ---
 
-## 7. Searching Window
+## 7. License Window
 
-**User Test Case: Keyboard Navigation**
-* **Scenario**: A user is actively working in another application and switches back to the password manager to quickly retrieve a specific account using their keyboard.
-* **Task**: Use a keyboard shortcut to focus the search field, type a keyword, and locate the desired credential without using the mouse.
-* **Expected Behavior**: The user presses a standard searching shortcut, the cursor immediately focuses within the "Find" input field, and the list filters as the user types.
+**User Test Case: Quick Dismissal of Informational Modals**
+* **Scenario**: A user opens the "License" dialog out of curiosity to check the software's copyright year. After glancing at the first few lines, they want to quickly close the window and return to their main task without reaching for the mouse.
+* **Task**: Close the License dialog using standard system keyboard shortcuts.
+* **Expected Behavior**: Pressing the `Escape` (Esc) key or the `Enter` key (since the "Ok" button appears to be the default focused button with the blue border) should immediately dismiss the dialog.
 
-**Heuristic Evaluation: Consistency and Standards**
-* **Observation**: The user attempts to initiate a search using standard keyboard shortcuts but cannot find any visual cue indicating if shortcuts are supported.
-* **Finding**: **Minor Issue**. The "Find" label and input box lack a visual hint regarding keyboard shortcuts. It did not follow macOS system convention.
-* **Recommendation**: Add "Find" to the tool bar text or the input box that explicitly states "Find (Control+F)" to improve discoverability and align with platform standards.
+**Heuristic Evaluation: User Control and Freedom**
+* **Observation**: The user attempts to press the `Esc` key to close the window. 
+* **Finding**: **Minor Issue (Pending Verification)**. In this application, dialogs do not map the `Esc` key to the "Close/Cancel" action by default.
+* **Recommendation**: Ensure that the `Esc` key is globally mapped to dismiss this dialog. Additionally, verify that pressing `Enter` triggers the highlighted "✔ Ok" button.
 
 ---
+
+## 8. About Window
+
+**User Test Case: Verifying Software Stability**
+* **Scenario**: A non-technical user is checking the "About" dialog to see what version they are running and whether they should look for a stable update.
+* **Task**: Read the version number and understand the current release status of the application.
+* **Expected Behavior**: The version string uses plain language that clearly communicates whether this is a stable release, a beta, or a test version.
+
+**Heuristic Evaluation: Match between System and the Real World**
+* **Observation**: The version is displayed as "1.0.7-SNAPSHOT".
+* **Finding**: **Minor Issue**. The term "SNAPSHOT" is specific developer jargon (originating from Maven build tools) indicating an unstable, actively developed build. A regular end-user may not understand what "SNAPSHOT" means or might find it confusing in a security-focused application like a password manager.
+* **Recommendation**: If the application is distributed to end-users, strip the "SNAPSHOT" suffix in the production build or replace it with user-friendly terminology such as "1.0.7 (Beta)" or "1.0.7 (Development Build)". Keep developer jargon out of the user-facing UI.
