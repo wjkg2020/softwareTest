@@ -41,8 +41,6 @@ public class CbcBlackBoxTest {
 
     @Test
     public void testPaddingBoundaries() throws Exception {
-        // BA: Test block size boundaries (16 bytes)
-        // PKCS-style padding requires a full extra block if data is an exact multiple of block size
 
         int[] boundaries = {15, 16, 17};
 
@@ -51,10 +49,7 @@ public class CbcBlackBoxTest {
             Cbc cbc = new Cbc(dummyIv, dummyKey, out);
             cbc.encrypt(new byte[len]);
             cbc.finishEncryption();
-
             byte[] ciphertext = out.toByteArray();
-
-            // Ciphertext length must always be a multiple of 16 and strictly greater than plaintext
             assertTrue(ciphertext.length % 16 == 0, "Ciphertext length must be a multiple of 16");
             assertTrue(ciphertext.length > len, "Ciphertext must include padding");
         }
@@ -73,25 +68,19 @@ public class CbcBlackBoxTest {
 
     @Test
     public void testCombinatorialChunking() throws Exception {
-        // Combinatorial: Encrypting data in one big chunk vs. many small chunks
-        // should yield the exact same ciphertext because CBC is a continuous stream.
+
         byte[] data = new byte[32];
         new Random(123).nextBytes(data);
-
-        // Approach 1: One big chunk
         ByteArrayOutputStream out1 = new ByteArrayOutputStream();
         Cbc cbc1 = new Cbc(dummyIv, dummyKey, out1);
         cbc1.encrypt(data);
         cbc1.finishEncryption();
-
-        // Approach 2: Byte-by-byte chunking
         ByteArrayOutputStream out2 = new ByteArrayOutputStream();
         Cbc cbc2 = new Cbc(dummyIv, dummyKey, out2);
         for (byte b : data) {
             cbc2.encrypt(new byte[]{b}); // Feed 1 byte at a time
         }
         cbc2.finishEncryption();
-
         assertArrayEquals(out1.toByteArray(), out2.toByteArray(),
                 "Combinatorial chunking should yield identical ciphertexts");
     }
