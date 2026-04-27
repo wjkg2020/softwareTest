@@ -98,4 +98,8 @@ If want to run mutation test:
     mvn test org.pitest:pitest-maven:mutationCoverage
 
 
+Test Environment
+-------------
+
+We recommend Windows as test environment. MacOS may contain certain fault due to different operation system settings.
 
