@@ -20,7 +20,7 @@ public class DataModelWhiteBoxTest {
 
     @BeforeEach
     public void resetSingleton() throws Exception {
-        // 白盒测试特权：利用反射重置单例状态，确保测试环境绝对干净
+
         Field instance = DataModel.class.getDeclaredField("instance");
         instance.setAccessible(true);
         instance.set(null, null);
@@ -29,7 +29,7 @@ public class DataModelWhiteBoxTest {
         dataModel.clear();
     }
 
-    // --- 1. 覆盖 getInstance() 的同步分支 ---
+  
 
     /**
      * Test Goal: Cover the 'if (instance == null)' branch in getInstance().
@@ -44,7 +44,7 @@ public class DataModelWhiteBoxTest {
         assertSame(firstCall, secondCall, "Logic Branch: Should return the existing instance on second call.");
     }
 
-    // --- 2. 覆盖 getEntryByTitle() 的所有逻辑分支 ---
+  
 
     /**
      * Test Goal: Cover the 'if (entryIndex != -1)' TRUE branch.
@@ -73,7 +73,7 @@ public class DataModelWhiteBoxTest {
         assertNull(result, "Logic Branch: Should return null when index is -1");
     }
 
-    // --- 3. 覆盖 getTitles() 的 Stream 内部逻辑 ---
+ 
 
     /**
      * Test Goal: Verify the mapping logic in Stream API.
@@ -109,7 +109,7 @@ public class DataModelWhiteBoxTest {
         assertNull(titles.get(0), "Stream should correctly map a null title if it exists in the model");
     }
 
-    // --- 4. 覆盖 clear() 的深度重置 ---
+  
 
     /**
      * Test Goal: Ensure the internal entries list is actually cleared, not just the reference.
@@ -122,11 +122,10 @@ public class DataModelWhiteBoxTest {
 
         dataModel.clear();
 
-        // 白盒关注点：不仅看 dataModel 状态，还要看 entries 内部列表的状态
+ 
         assertEquals(0, dataModel.getEntries().getEntry().size(), "The internal XML entry list must be purged.");
     }
 
-    // --- 5. 状态一致性白盒测试 (Mutation Killer) ---
 
     /**
      * Test Goal: Kill mutants related to 'modified' flag assignment.
