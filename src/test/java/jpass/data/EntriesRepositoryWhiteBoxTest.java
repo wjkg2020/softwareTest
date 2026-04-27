@@ -18,12 +18,6 @@ import java.util.stream.Stream;
 import jpass.xml.bind.Entries;
 import jpass.xml.bind.Entry;
 
-/**
- * 完整白盒测试与变异体杀手测试套件
- * 目标：
- * 1. Branch/Line Coverage: 覆盖所有 if/else 和 try-catch 分支。
- * 2. Mutation Killing: 通过文件锁技术杀掉 finally 块中 close() 调用的变异体。
- */
 /*
  * ACADEMIC ANALYSIS: Surviving Mutants on Line 130 and Line 155 (stream.close())
  * ----------------------------------------------------------------------------
@@ -55,14 +49,13 @@ public class EntriesRepositoryWhiteBoxTest {
     @TempDir
     Path tempDir;
 
-    // --- 1. 基础覆盖：工厂方法 ---
+ 
     @Test
     public void testFactoryMethods() {
         assertNotNull(EntriesRepository.newInstance("test.jpass"));
         assertNotNull(EntriesRepository.newInstance("test.jpass", "key".toCharArray()));
     }
 
-    // --- 2. 分支覆盖：writeDocument (明文/加密分支) ---
     @ParameterizedTest
     @MethodSource("provideKeysAndData")
     public void testWriteDocument_BranchCoverage(char[] key, int entryCount) throws Exception {
@@ -80,7 +73,7 @@ public class EntriesRepositoryWhiteBoxTest {
         assertTrue(Files.exists(Paths.get(fileName)));
     }
 
-    // --- 3. 分支覆盖：readDocument (正常/异常/包装分支) ---
+  
     @ParameterizedTest
     @MethodSource("provideReadTestCases")
     public void testReadDocument_FullBranchCoverage(char[] key, String fileContent, boolean exists, Class<? extends Exception> expectedException) throws Exception {
@@ -94,7 +87,6 @@ public class EntriesRepositoryWhiteBoxTest {
                 }
             }
         } else {
-            // 构造一个绝对不存在的路径
             fileName = tempDir.resolve("non_existent_subdir").resolve("file.jpass").toString();
         }
 
@@ -105,7 +97,6 @@ public class EntriesRepositoryWhiteBoxTest {
                 try {
                     repo.readDocument();
                 } catch (Exception e) {
-                    // 缓解 Windows 文件占用，确保后续测试能清理临时目录
                     System.gc();
                     throw e;
                 }
@@ -115,33 +106,23 @@ public class EntriesRepositoryWhiteBoxTest {
         }
     }
 
-    // --- 4. 变异体杀手 (Mutation Killers) ---
+    // --- (Mutation Killers) ---
 
 
 
-    /**
-     * 杀死 Line 152 & 127: 异常包装变异体
-     * 确保进入 catch (Exception e) 块并将错误包装为 DocumentProcessException
-     */
+
     @Test
     public void killExceptionWrappingMutants() {
-        // --- 1. 强制进入 writeDocument 的 catch (Exception) ---
-        // 传入 null 作为文件名。new FileOutputStream(null) 会抛出 NullPointerException (NPE)
-        // NPE 属于 Exception 但不是 IOException，因此会进入包装逻辑
+
         EntriesRepository repoWrite = EntriesRepository.newInstance(null);
 
         DocumentProcessException exW = assertThrows(DocumentProcessException.class, () -> {
             repoWrite.writeDocument(new Entries());
         }, "Should wrap NPE from null filename into DocumentProcessException in writeDocument");
 
-        // 补刀：验证消息处理，杀掉关于 stripString 的变异
+        
         assertNotNull(exW.getMessage(), "Killed mutant: removed exception processing in writeDocument");
 
-
-        // --- 2. 强制进入 readDocument 的 catch (Exception) ---
-        // 同样利用 null 文件名。new FileInputStream(null) 抛出 NPE
-        // 关键点：readDocument 的第一个 catch 只抓 IOException。
-        // NPE 会跳过第一个 catch，进入第二个 catch (Exception) 块！
         EntriesRepository repoRead = EntriesRepository.newInstance(null);
 
         DocumentProcessException exR = assertThrows(DocumentProcessException.class, () -> {
@@ -151,7 +132,6 @@ public class EntriesRepositoryWhiteBoxTest {
         assertNotNull(exR.getMessage(), "Killed mutant: removed exception processing in readDocument");
     }
 
-    // --- 5. 集成测试：端到端验证 ---
     @Test
     public void testFullIntegrationCycle() throws Exception {
         String fileName = tempDir.resolve("integration.jpass").toString();
@@ -170,7 +150,7 @@ public class EntriesRepositoryWhiteBoxTest {
         assertEquals("Secret Title", retrieved.getEntry().get(0).getTitle());
     }
 
-    // --- 参数化数据源 ---
+
 
     private static Stream<Arguments> provideKeysAndData() {
         return Stream.of(
@@ -184,11 +164,9 @@ public class EntriesRepositoryWhiteBoxTest {
 
     private static Stream<Arguments> provideReadTestCases() {
         return Stream.of(
-                // 覆盖 IOException 分支：文件不存在
+     
                 Arguments.of(null, null, false, IOException.class),
-                // 覆盖解析错误分支 (Jackson 抛出 JsonParseException，属于 IOException)
                 Arguments.of(null, "NOT_XML", true, IOException.class),
-                // 覆盖解密错误分支 (GZIP 抛出 IOException)
                 Arguments.of("wrong_key".toCharArray(), "RANDOM_DATA", true, IOException.class)
         );
     }
