@@ -85,3 +85,17 @@ Each configuration property can be overridden by system properties, with the `jp
 
     java -Djpass.entry.details=TITLE -jar jpass-1.0.7-SNAPSHOT.jar
 
+
+Test Instructions
+-------------
+
+If want to run standard unit tests:
+
+    mvn clean test
+
+If want to run mutation test:
+
+    mvn test org.pitest:pitest-maven:mutationCoverage
+
+
+
