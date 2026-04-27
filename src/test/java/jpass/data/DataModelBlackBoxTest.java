@@ -19,7 +19,7 @@ public class DataModelBlackBoxTest {
     @BeforeEach
     public void setUp() {
         dataModel = DataModel.getInstance();
-        // 关键操作：每个测试前清空单例状态，模拟独立环境
+
         dataModel.clear();
     }
 
