@@ -6,9 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class Aes256WhiteBoxTest {
 
-    // =========================================================
     // UNIT TESTS: Control Flow & Exception Handling
-    // =========================================================
 
     @Test
     public void testConstructorShortKeyException() {
@@ -46,9 +44,7 @@ public class Aes256WhiteBoxTest {
         }, "Invalid inIndex offset should throw exception");
     }
 
-    // =========================================================
     // UNIT TESTS: Internal Branch Coverage (Data Flow)
-    // =========================================================
 
     @Test
     public void testInternalMathBranchCoverage() {
@@ -78,9 +74,7 @@ public class Aes256WhiteBoxTest {
         // Asserting it doesn't crash is enough, correctness is verified in black-box tests.
     }
 
-    // =========================================================
     // INTEGRATION TEST
-    // =========================================================
 
     @Test
     public void testSequentialMultiBlockIntegration() {
