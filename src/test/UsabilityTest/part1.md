@@ -1,6 +1,6 @@
-# Usability Evaluation Report: JPass Password Manager (Phase 1)
+# Usability Evaluation Report: JPass Password Manager
 
-This report details the usability testing and heuristic evaluation for the first four core interfaces of JPass, as part of the MSCS coursework requirements.
+This report details the usability testing based on window coverage of JPass.
 
 ---
 
